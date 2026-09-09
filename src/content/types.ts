@@ -30,9 +30,15 @@ export interface ProjectEntry {
   demoUrl?: string;
 }
 
+export interface GameReward {
+  title: string;
+  detail: string;
+}
+
 export interface PortfolioContent {
   profile: PortfolioProfile;
   skillGroups: SkillGroup[];
   experience: ExperienceEntry[];
   projects: ProjectEntry[];
+  gameRewards: GameReward[];
 }

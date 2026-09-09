@@ -18,15 +18,23 @@ export function GameControls({
   onRestart,
 }: GameControlsProps) {
   if (isGameOver) {
-    return <button onClick={onRestart}>Restart game</button>;
+    return (
+      <button className="game-session-button" onClick={onRestart}>
+        Restart game
+      </button>
+    );
   }
 
   if (!isPlaying) {
-    return <button onClick={onStart}>Start game</button>;
+    return (
+      <button className="game-session-button" onClick={onStart}>
+        Start game
+      </button>
+    );
   }
 
   return (
-    <div className="game-controls" aria-label="Tetris controls">
+    <div className="game-controls" aria-label="Touch controls">
       <button aria-label="Move piece left" onClick={() => onMove(-1)}>
         Left
       </button>

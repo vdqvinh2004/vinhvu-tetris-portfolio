@@ -1,7 +1,25 @@
 import { describe, expect, it } from "vitest";
 import { clearLines } from "../../src/game/engine";
 import { BOARD_HEIGHT, BOARD_WIDTH, createBoard } from "../../src/game/pieces";
-import { gameReducer, initialGameState } from "../../src/game/reducer";
+import {
+  LINES_PER_ROUND,
+  TOTAL_LINES,
+  TOTAL_ROUNDS,
+  gameReducer,
+  initialGameState,
+} from "../../src/game/reducer";
+
+function stateReadyToClearTwoLines() {
+  const board = createBoard();
+  board[BOARD_HEIGHT - 2].fill("I");
+  board[BOARD_HEIGHT - 1].fill("I");
+  board[BOARD_HEIGHT - 2][5] = null;
+  board[BOARD_HEIGHT - 1][5] = null;
+  return {
+    board,
+    activePiece: { kind: "I" as const, rotation: 1, x: 3, y: BOARD_HEIGHT - 4 },
+  };
+}
 
 describe("gameReducer", () => {
   it("starts a new game and moves the active piece", () => {
@@ -33,30 +51,51 @@ describe("gameReducer", () => {
     expect(gameReducer(initialGameState(), { type: "skip" }).phase).toBe("skipped");
   });
 
-  it("unlocks after the third cleared line", () => {
+  it("unlocks one portfolio reward after each round", () => {
     const state = gameReducer(initialGameState(), { type: "start" });
-    const board = createBoard();
-    board[BOARD_HEIGHT - 1].fill("I");
-    board[BOARD_HEIGHT - 1][3] = null;
-    board[BOARD_HEIGHT - 1][4] = null;
-    board[BOARD_HEIGHT - 1][5] = null;
-    const nearUnlock = {
+    const nearReward = {
       ...state,
-      board,
-      activePiece: { kind: "I" as const, rotation: 0, x: 3, y: BOARD_HEIGHT - 2 },
-      linesCleared: 2,
+      ...stateReadyToClearTwoLines(),
     };
 
-    expect(gameReducer(nearUnlock, { type: "tick" })).toMatchObject({
-      linesCleared: 3,
+    expect(gameReducer(nearReward, { type: "tick" })).toMatchObject({
+      linesCleared: LINES_PER_ROUND,
+      round: 2,
+      rewardsUnlocked: 1,
+      phase: "playing",
+    });
+  });
+
+  it("completes after the final reward and never grants it twice", () => {
+    const state = gameReducer(initialGameState(), { type: "start" });
+    const finalRound = {
+      ...state,
+      ...stateReadyToClearTwoLines(),
+      linesCleared: TOTAL_LINES - LINES_PER_ROUND,
+      round: TOTAL_ROUNDS,
+      rewardsUnlocked: TOTAL_ROUNDS - 1,
+    };
+
+    const complete = gameReducer(finalRound, { type: "tick" });
+    expect(complete).toMatchObject({
+      linesCleared: TOTAL_LINES,
+      round: TOTAL_ROUNDS,
+      rewardsUnlocked: TOTAL_ROUNDS,
       phase: "unlocked",
     });
+    expect(gameReducer(complete, { type: "tick" })).toBe(complete);
   });
 
   it("resets to an idle session on restart", () => {
     const state = gameReducer(gameReducer(initialGameState(), { type: "start" }), {
       type: "restart",
     });
-    expect(state).toMatchObject({ phase: "idle", score: 0, linesCleared: 0 });
+    expect(state).toMatchObject({
+      phase: "idle",
+      score: 0,
+      linesCleared: 0,
+      round: 1,
+      rewardsUnlocked: 0,
+    });
   });
 });

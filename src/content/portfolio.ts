@@ -50,4 +50,22 @@ export const portfolio: PortfolioContent = {
       technologies: ["[Add technology]"],
     },
   ],
+  gameRewards: [
+    {
+      title: "PLAYER PROFILE UNLOCKED",
+      detail: "Vinh Vu: Full-stack Developer and Automation QA Engineer.",
+    },
+    {
+      title: "SKILL CACHE UNLOCKED",
+      detail: "Builds with TypeScript, React, C#, .NET, SQL, REST APIs, Playwright, and CI/CD.",
+    },
+    {
+      title: "PROJECT FILE UNLOCKED",
+      detail: "Vinh's Tetris combines React, TypeScript, ASP.NET, and SignalR product work.",
+    },
+    {
+      title: "MISSION COMPLETE",
+      detail: "The full portfolio, resume, and contact details are ready to explore.",
+    },
+  ],
 };

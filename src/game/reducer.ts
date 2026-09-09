@@ -3,12 +3,18 @@ import type { ActivePiece, Board, PieceKind } from "./pieces";
 
 export type GamePhase = "idle" | "playing" | "game-over" | "unlocked" | "skipped";
 
+export const LINES_PER_ROUND = 2;
+export const TOTAL_ROUNDS = 4;
+export const TOTAL_LINES = LINES_PER_ROUND * TOTAL_ROUNDS;
+
 export interface GameState {
   board: Board;
   activePiece: ActivePiece;
   nextPiece: PieceKind;
   score: number;
   linesCleared: number;
+  round: number;
+  rewardsUnlocked: number;
   phase: GamePhase;
 }
 
@@ -34,6 +40,8 @@ export function initialGameState(): GameState {
     nextPiece: "I",
     score: 0,
     linesCleared: 0,
+    round: 1,
+    rewardsUnlocked: 0,
     phase: "idle",
   };
 }
@@ -44,12 +52,16 @@ function moveDown(state: GameState): GameState {
 
   const cleared = clearLines(lockPiece(state.board, state.activePiece));
   const linesCleared = state.linesCleared + cleared.count;
-  if (linesCleared >= 3) {
+  const rewardsUnlocked = Math.min(TOTAL_ROUNDS, Math.floor(linesCleared / LINES_PER_ROUND));
+  const round = Math.min(TOTAL_ROUNDS, rewardsUnlocked + 1);
+  if (linesCleared >= TOTAL_LINES) {
     return {
       ...state,
       board: cleared.board,
       score: state.score + cleared.count * 100,
       linesCleared,
+      round,
+      rewardsUnlocked,
       phase: "unlocked",
     };
   }
@@ -62,6 +74,8 @@ function moveDown(state: GameState): GameState {
         board: cleared.board,
         score: state.score + cleared.count * 100,
         linesCleared,
+        round,
+        rewardsUnlocked,
         phase: "game-over",
       }
     : {
@@ -69,6 +83,8 @@ function moveDown(state: GameState): GameState {
         board: cleared.board,
         score: state.score + cleared.count * 100,
         linesCleared,
+        round,
+        rewardsUnlocked,
         activePiece,
         nextPiece,
       };

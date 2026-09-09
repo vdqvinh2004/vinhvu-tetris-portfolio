@@ -15,3 +15,19 @@ test("portfolio actions are keyboard accessible and use static destinations", as
   await wordmark.focus();
   await expect(wordmark).toBeFocused();
 });
+
+test("the game supports the documented desktop keyboard controls", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/");
+  const console = page.locator(".game-console");
+  await page.getByRole("button", { name: /start game/i }).click();
+  await expect(console).toBeFocused();
+  await page.keyboard.press("KeyA");
+  await page.keyboard.press("KeyD");
+  await page.keyboard.press("Space");
+  await page.keyboard.press("KeyS");
+  await page.keyboard.press("KeyW");
+
+  await expect(console).toBeFocused();
+  await expect(page.locator(".game-status")).toHaveText(/Clear [12] line/i);
+});

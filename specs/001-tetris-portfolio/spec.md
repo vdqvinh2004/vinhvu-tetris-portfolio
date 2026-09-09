@@ -36,6 +36,7 @@ A recruiter arriving at the site sees a distinct Tetris-inspired opening and can
 1. **Given** a first-time visitor on the landing screen, **When** they choose Skip intro, **Then** the portfolio is immediately displayed without requiring gameplay.
 2. **Given** a visitor playing the landing game, **When** they clear a cumulative three lines, **Then** the game announces the achievement and reveals the portfolio.
 3. **Given** the portfolio is displayed, **When** a visitor chooses About, Skills, Experience, Projects, Resume, or Contact, **Then** the matching section is brought into view and clearly identified.
+4. **Given** a visitor chooses to play, **When** they clear two lines, **Then** one concise portfolio reward is revealed; after four rounds (eight total lines), they can enter the full portfolio.
 
 ---
 
@@ -83,7 +84,7 @@ A recruiter can download the resume and use clearly labelled links for GitHub, L
 ### Functional Requirements
 
 - **FR-001**: The site MUST present a playable, keyboard-operable falling-block game on the initial landing screen with visible controls and instructions.
-- **FR-002**: The landing game MUST reveal the portfolio after the player cumulatively clears three lines.
+- **FR-002**: The landing game MUST reveal one portfolio reward after each two cleared lines and offer full-portfolio entry after four rounds (eight cumulative lines).
 - **FR-003**: The landing screen MUST provide a persistent, keyboard-accessible Skip intro action that reveals the same portfolio without gameplay.
 - **FR-004**: The game MUST provide restart behavior after game over and must not block access to the skip action.
 - **FR-005**: The unlocked portfolio MUST include About, Skills, Experience, Projects, Resume, and Contact sections with conventional navigation.
@@ -95,6 +96,8 @@ A recruiter can download the resume and use clearly labelled links for GitHub, L
 - **FR-011**: The layout MUST work from 320px-wide mobile screens through desktop widths without horizontal overflow.
 - **FR-012**: The site MUST honor reduced-motion preferences by avoiding automatic gameplay movement and nonessential reveal animations.
 - **FR-013**: Retro visual effects MUST preserve readable text, discernible controls, and WCAG 2.2 AA color contrast for primary content.
+- **FR-014**: Before play and throughout desktop gameplay, the landing screen MUST visibly explain the round objective and keyboard controls: `A`/Left Arrow to move left, `D`/Right Arrow to move right, Space to rotate, `W`/Up Arrow to hard-drop, and `S`/Down Arrow to soft-drop.
+- **FR-015**: Desktop and large-screen gameplay MUST not show movement buttons; small screens MUST retain labelled touch controls and explain their availability.
 
 ### Key Entities
 
@@ -109,7 +112,7 @@ A recruiter can download the resume and use clearly labelled links for GitHub, L
 ### Measurable Outcomes
 
 - **SC-001**: A visitor can reach the portfolio overview through Skip intro in one activation from the initial screen.
-- **SC-002**: A visitor who clears three lines receives the unlocked portfolio without a page reload or manual navigation.
+- **SC-002**: A visitor who completes four two-line rounds receives all four portfolio rewards and can enter the full portfolio without a page reload.
 - **SC-003**: At 320px and 1440px viewport widths, all six portfolio sections and all recruiter actions are visible, operable, and free of horizontal page overflow.
 - **SC-004**: 100% of portfolio entries render from the central local content module, verified by changing a representative placeholder value without editing a UI component.
 - **SC-005**: Automated tests cover game line-clear/unlock behavior, skip navigation, central content rendering, and outbound recruiter actions.
@@ -119,6 +122,6 @@ A recruiter can download the resume and use clearly labelled links for GitHub, L
 
 - V1 targets full-stack developer and automation QA recruiters who generally have a few minutes to inspect a candidate portfolio on desktop or mobile.
 - The owner will replace all placeholder personal information, links, project evidence, and the resume PDF before publishing.
-- Three cumulative cleared lines creates a short, meaningful Tetris interaction; the portfolio remains available immediately through Skip intro.
+- Four two-line rounds create a longer, progressive interaction; every completed round reveals one concise portfolio fact, while the complete portfolio remains available immediately through Skip intro.
 - V1 is a one-page static site with in-page section navigation, not a multi-user application or a clone of the indexed project's backend.
 - GitHub Pages, Netlify, Vercel static hosting, or an equivalent static host will serve the build output; deployment configuration is deferred until implementation unless a host is selected.

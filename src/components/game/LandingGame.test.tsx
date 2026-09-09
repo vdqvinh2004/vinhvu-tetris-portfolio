@@ -9,7 +9,9 @@ describe("LandingGame", () => {
     const onEnterPortfolio = vi.fn();
     render(<LandingGame onEnterPortfolio={onEnterPortfolio} />);
 
-    expect(screen.getByText(/Clear three lines/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /how to play/i })).toBeInTheDocument();
+    expect(screen.getByText(/Space/)).toBeInTheDocument();
+    expect(screen.getByText(/Complete four rounds/i)).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /skip intro/i }));
 
     expect(onEnterPortfolio).toHaveBeenCalledOnce();
@@ -21,6 +23,8 @@ describe("LandingGame", () => {
 
     await user.click(screen.getByRole("button", { name: /start game/i }));
 
-    expect(screen.getByRole("button", { name: /move piece left/i })).toBeInTheDocument();
+    expect(screen.getByText(/Starting a game focuses this panel/i)).toBeInTheDocument();
+    expect(screen.getByText(/A or Left Arrow/i)).toBeInTheDocument();
+    expect(screen.getByText(/W or Up Arrow/i)).toBeInTheDocument();
   });
 });

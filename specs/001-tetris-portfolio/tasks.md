@@ -88,6 +88,25 @@ description: "Implementation tasks for the frontend-only Tetris portfolio"
 - [x] T033 Run `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm run test`, `npm run test:e2e`, and `npm run build`; resolve every failure.
 - [ ] T034 Manually validate the preview build at 320px and desktop widths, keyboard-only controls, focus after skip/unlock, game-over recovery, reduced motion, contrast, and outbound link destinations using `specs/001-tetris-portfolio/quickstart.md`.
 
+## Phase 7: Progressive Portfolio Game (Next Phase)
+
+**Purpose**: Replace the short three-line intro with a replayable, keyboard-first Tetris journey where every completed round reveals a meaningful piece of the portfolio.
+
+- [x] T035 Define the progressive game journey in `specs/001-tetris-portfolio/spec.md`: a longer completion target, what constitutes a round, round difficulty progression, and the completion/restart/skip paths. Keep the full portfolio reachable immediately through Skip intro.
+- [x] T036 Define a centrally managed reward sequence in `src/content/portfolio.ts` and `src/content/types.ts`. Map each round to one concise, useful portfolio reveal, such as an identity detail, skill group, experience highlight, project preview, contact prompt, or final portfolio access.
+- [x] T037 Extend the game-session model and reducer in `src/game/reducer.ts` to track the current round, reward history, unlock state, progression target, and reset behavior without persisting visitor data.
+- [x] T038 Add deterministic game rules in `src/game/engine.ts` and `src/game/reducer.ts` that make later rounds more engaging without becoming unfair: measured speed increases, score milestones, and a clearly communicated difficulty cap.
+- [x] T039 Add unit tests in `tests/unit/game-reducer.test.ts` for every round transition, exactly-once reward grants, progression after multi-line clears, completion, restart, game-over recovery, and Skip intro from every game state.
+- [x] T040 Redesign `src/components/game/LandingGame.tsx` and `src/components/game/GameBoard.tsx` around the progressive reveal loop: before play begins, show a clear how-to-play legend with every keyboard mapping and the round objective; keep the keyboard legend visible during desktop play, show the mobile touch-control equivalent on small screens, and show the current objective, next reward, completed rewards, round feedback, and a final completion state that directs visitors to the full portfolio.
+- [x] T041 Create an accessible in-game portfolio-reward display in `src/components/game/` that reveals one information card per completed round, announces newly unlocked information without repeating it, and lets keyboard users inspect prior rewards.
+- [x] T042 Update `src/components/game/GameControls.tsx` and keyboard handling so desktop and large-screen gameplay is keyboard-only: `A`/Left Arrow moves left, `D`/Right Arrow moves right, `Space` rotates, `W`/Up Arrow hard-drops, and `S`/Down Arrow soft-drops. Prevent these keys from scrolling the page while the game has focus.
+- [x] T043 Restrict visible button/touch controls to small and touch-oriented layouts in `src/styles/components.css`, while retaining on-screen keyboard instructions and accessible control descriptions on desktop and large screens.
+- [x] T044 Update component and end-to-end tests in `src/components/game/LandingGame.test.tsx`, `tests/e2e/portfolio-access.spec.ts`, and `tests/e2e/accessibility.spec.ts` for the longer progressive journey, reward rendering, desktop control removal, mobile touch controls, custom keyboard mappings, focus management, and reduced-motion behavior.
+- [x] T045 Review every reward for recruiter value and brevity: no reward may expose unverified claims, repeat the same portfolio detail, hide essential contact information behind gameplay, or prevent visitors from accessing the complete portfolio through Skip intro.
+- [ ] T046 Run `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm run test`, `npm run test:e2e`, and `npm run build`; manually validate the full game journey on desktop keyboard input, mobile touch input, reduced motion, and a game-over/restart path.
+
+**Checkpoint**: A visitor can play a longer, escalating game that reveals useful portfolio details round by round, while recruiters can still skip directly to every portfolio section.
+
 ## Dependencies and Execution Order
 
 - T001-T005 establish tooling and can begin first.
@@ -96,6 +115,8 @@ description: "Implementation tasks for the frontend-only Tetris portfolio"
 - User Story 2 components can proceed in parallel after T006-T008, then integrate after T018.
 - User Story 3 components can proceed in parallel after T006-T008, then integrate after T018.
 - T030-T034 follow the intended completed stories.
+- T035 defines the phase rules before T036-T038. T037-T039 must complete before the progressive UI in T040-T041.
+- T042-T043 can proceed in parallel after the final interaction model from T035 is agreed. T044 follows T039-T043; T045-T046 complete the phase.
 
 ## Parallel Opportunities
 
@@ -104,6 +125,8 @@ description: "Implementation tasks for the frontend-only Tetris portfolio"
 - T021-T023 are separate User Story 2 section components.
 - T026-T027 are separate User Story 3 section components.
 - T030 and T031 can run in parallel after the final component structure stabilizes.
+- T036 and T038 modify separate concerns and can begin in parallel after T035.
+- T042 and T043 can be assigned independently once the keyboard and responsive-control decisions are fixed.
 
 ## Implementation Strategy
 
@@ -111,5 +134,6 @@ description: "Implementation tasks for the frontend-only Tetris portfolio"
 2. Deliver recruiter evidence through T021-T025.
 3. Deliver resume and contact conversion through T026-T029.
 4. Complete T030-T034 before treating the site as publishable.
+5. Deliver the longer progressive game through T035-T046 after the existing release validation is complete.
 
 Each phase retains a fully static frontend and must pass the constitution gates before the next phase begins.

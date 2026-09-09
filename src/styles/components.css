@@ -38,6 +38,9 @@
   letter-spacing: 0.08em;
   margin-bottom: 0.85rem;
 }
+.game-hud span:nth-child(2) {
+  color: var(--cyan);
+}
 .game-board {
   aspect-ratio: 1 / 2;
   border: 2px solid var(--grid);
@@ -78,10 +81,103 @@
   min-height: 2.4rem;
   padding-top: 0.75rem;
 }
+.how-to-play {
+  border-top: 1px solid var(--grid);
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+}
+.how-to-play h2,
+.game-reward-heading h2 {
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.4rem;
+  text-transform: uppercase;
+}
+.how-to-play p,
+.how-to-play dl {
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.5;
+  margin: 0;
+}
+.how-to-play dl {
+  display: grid;
+  gap: 0.28rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 0.55rem;
+}
+.how-to-play dl div {
+  display: flex;
+  gap: 0.35rem;
+}
+.how-to-play dt {
+  color: var(--yellow);
+  font-weight: 700;
+}
+.how-to-play dd {
+  margin: 0;
+}
+.touch-control-note {
+  display: none;
+  margin-top: 0.55rem !important;
+}
+.game-session-button {
+  width: 100%;
+}
 .game-controls {
   display: grid;
   gap: 0.5rem;
   grid-template-columns: repeat(3, 1fr);
+}
+.game-rewards {
+  border-top: 1px solid var(--grid);
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+}
+.game-reward-heading {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+}
+.game-reward-heading span {
+  color: var(--cyan);
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+.game-rewards ol {
+  display: grid;
+  gap: 0.45rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.game-reward {
+  align-items: flex-start;
+  background: #0c1321;
+  border: 1px solid var(--grid);
+  color: var(--muted);
+  display: flex;
+  gap: 0.55rem;
+  padding: 0.55rem;
+}
+.game-reward.is-unlocked {
+  border-color: var(--cyan);
+  color: var(--ink);
+}
+.game-reward-number {
+  color: var(--yellow);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.game-reward h3,
+.game-reward p {
+  font-size: 0.7rem;
+  line-height: 1.4;
+  margin: 0;
+}
+.game-reward h3 {
+  color: var(--cyan);
+  margin-bottom: 0.2rem;
 }
 .game-controls button {
   font-size: 0.72rem;
@@ -236,11 +332,20 @@
     max-width: 330px;
     width: 100%;
   }
+  .touch-control-note {
+    display: block;
+  }
   .portfolio-nav {
     align-items: flex-start;
     flex-direction: column;
   }
   .portfolio-nav > div {
     justify-content: flex-start;
+  }
+}
+
+@media (min-width: 721px) {
+  .game-controls {
+    display: none;
   }
 }
