@@ -1,0 +1,17 @@
+:root {
+  color-scheme: dark;
+  font-family: "Courier New", Courier, monospace;
+  font-synthesis: none;
+  --ink: #eaf6ff;
+  --muted: #a6c3d7;
+  --void: #070a12;
+  --panel: #101727;
+  --grid: #263a55;
+  --cyan: #48d8ff;
+  --pink: #ff4d9d;
+  --yellow: #ffe663;
+  --green: #60ef9a;
+  --orange: #ff9b4d;
+  --focus: #fff;
+  --shadow: 5px 5px 0 #03050a;
+}
