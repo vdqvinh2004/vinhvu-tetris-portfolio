@@ -9,12 +9,12 @@ import {
   initialGameState,
 } from "../../src/game/reducer";
 
-function stateReadyToClearTwoLines() {
+function stateReadyToClearFourLines() {
   const board = createBoard();
-  board[BOARD_HEIGHT - 2].fill("I");
-  board[BOARD_HEIGHT - 1].fill("I");
-  board[BOARD_HEIGHT - 2][5] = null;
-  board[BOARD_HEIGHT - 1][5] = null;
+  for (let row = BOARD_HEIGHT - 4; row < BOARD_HEIGHT; row += 1) {
+    board[row].fill("I");
+    board[row][5] = null;
+  }
   return {
     board,
     activePiece: { kind: "I" as const, rotation: 1, x: 3, y: BOARD_HEIGHT - 4 },
@@ -55,7 +55,7 @@ describe("gameReducer", () => {
     const state = gameReducer(initialGameState(), { type: "start" });
     const nearReward = {
       ...state,
-      ...stateReadyToClearTwoLines(),
+      ...stateReadyToClearFourLines(),
     };
 
     expect(gameReducer(nearReward, { type: "tick" })).toMatchObject({
@@ -70,7 +70,7 @@ describe("gameReducer", () => {
     const state = gameReducer(initialGameState(), { type: "start" });
     const finalRound = {
       ...state,
-      ...stateReadyToClearTwoLines(),
+      ...stateReadyToClearFourLines(),
       linesCleared: TOTAL_LINES - LINES_PER_ROUND,
       round: TOTAL_ROUNDS,
       rewardsUnlocked: TOTAL_ROUNDS - 1,

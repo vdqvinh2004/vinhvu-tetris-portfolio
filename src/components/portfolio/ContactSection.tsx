@@ -7,8 +7,8 @@ export function ContactSection() {
       className="portfolio-section contact-section"
       aria-labelledby="contact-title"
     >
-      <p className="eyebrow">NEXT PLAYER</p>
-      <h2 id="contact-title">Let&apos;s build a better level.</h2>
+      <p className="eyebrow">NOTE 06 / CONTACT</p>
+      <h2 id="contact-title">Have a useful problem to solve?</h2>
       <p>
         Open to conversations about full-stack development, test automation, and quality-minded
         teams.

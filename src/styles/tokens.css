@@ -1,17 +1,17 @@
 :root {
-  color-scheme: dark;
-  font-family: "Courier New", Courier, monospace;
+  color-scheme: light;
+  font-family: Arial, Helvetica, sans-serif;
   font-synthesis: none;
-  --ink: #eaf6ff;
-  --muted: #a6c3d7;
-  --void: #070a12;
-  --panel: #101727;
-  --grid: #263a55;
-  --cyan: #48d8ff;
-  --pink: #ff4d9d;
-  --yellow: #ffe663;
-  --green: #60ef9a;
-  --orange: #ff9b4d;
-  --focus: #fff;
-  --shadow: 5px 5px 0 #03050a;
+  --ink: #0a0a0d;
+  --muted: #4d5562;
+  --void: #f5f5f1;
+  --panel: #ffffff;
+  --grid: #d9dce2;
+  --cyan: #2459e8;
+  --pink: #e4352d;
+  --yellow: #ffd539;
+  --green: #07966b;
+  --orange: #ed7f2e;
+  --focus: #2459e8;
+  --shadow: 8px 8px 0 var(--ink);
 }

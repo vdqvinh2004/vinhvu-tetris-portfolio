@@ -1,39 +1,38 @@
+import { useEffect, useState } from "react";
 import { portfolio } from "../../content/portfolio";
 
 interface GameRewardsProps {
   rewardsUnlocked: number;
 }
 
+const DISPLAY_MS = 4300;
+
 export function GameRewards({ rewardsUnlocked }: GameRewardsProps) {
   const latestReward = portfolio.gameRewards[rewardsUnlocked - 1];
+  const [dismissed, setDismissed] = useState(false);
+
+  useEffect(() => {
+    if (!latestReward) return undefined;
+    const timer = window.setTimeout(() => setDismissed(true), DISPLAY_MS);
+    return () => window.clearTimeout(timer);
+  }, [latestReward]);
 
   return (
-    <section aria-labelledby="reward-title" className="game-rewards">
-      <div className="game-reward-heading">
-        <h2 id="reward-title">Portfolio cache</h2>
-        <span>
-          {rewardsUnlocked}/{portfolio.gameRewards.length} unlocked
-        </span>
-      </div>
+    <>
       <div aria-live="polite" className="sr-only" role="status">
-        {latestReward ? `Reward unlocked: ${latestReward.title}.` : "No rewards unlocked yet."}
+        {latestReward
+          ? `Achievement unlocked: ${latestReward.title}. ${latestReward.detail}`
+          : "Clear four lines to unlock the first portfolio achievement."}
       </div>
-      <ol>
-        {portfolio.gameRewards.map((reward, index) => {
-          const unlocked = index < rewardsUnlocked;
-          return (
-            <li className={unlocked ? "game-reward is-unlocked" : "game-reward"} key={reward.title}>
-              <span className="game-reward-number">0{index + 1}</span>
-              <div>
-                <h3>{unlocked ? reward.title : "CLASSIFIED"}</h3>
-                <p>
-                  {unlocked ? reward.detail : "Clear this round to reveal the next portfolio file."}
-                </p>
-              </div>
-            </li>
-          );
-        })}
-      </ol>
-    </section>
+      {latestReward && !dismissed && (
+        <div aria-hidden="true" className="achievement-overlay">
+          <div className="achievement-card">
+            <span>ACHIEVEMENT UNLOCKED</span>
+            <h3>{latestReward.title}</h3>
+            <p>{latestReward.detail}</p>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

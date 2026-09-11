@@ -150,6 +150,11 @@ export function getCells(piece: ActivePiece): readonly (readonly [number, number
   return rotations[piece.rotation % rotations.length];
 }
 
+/** Base (unrotated) cell offsets for a kind — used to build 3D tetromino clusters. */
+export function baseCells(kind: PieceKind): readonly (readonly [number, number])[] {
+  return shapes[kind][0];
+}
+
 export function createBoard(): Board {
   return Array.from({ length: BOARD_HEIGHT }, () => Array<Cell>(BOARD_WIDTH).fill(null));
 }

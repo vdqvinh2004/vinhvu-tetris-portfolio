@@ -1,19 +1,22 @@
-import { useEffect, useState } from "react";
+import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 import { LandingGame } from "../components/game/LandingGame";
 import { PortfolioShell } from "../components/portfolio/PortfolioShell";
 
 export function App() {
-  const [portfolioVisible, setPortfolioVisible] = useState(false);
-
-  useEffect(() => {
-    if (!portfolioVisible) return;
-    document.getElementById("portfolio")?.focus();
-  }, [portfolioVisible]);
-
   return (
-    <>
-      {!portfolioVisible && <LandingGame onEnterPortfolio={() => setPortfolioVisible(true)} />}
-      {portfolioVisible && <PortfolioShell />}
-    </>
+    <Routes>
+      <Route index element={<GameRoute />} />
+      <Route path="portfolio" element={<PortfolioRoute />} />
+      <Route path="*" element={<Navigate replace to="/" />} />
+    </Routes>
   );
+}
+
+function GameRoute() {
+  const navigate = useNavigate();
+  return <LandingGame onEnterPortfolio={() => navigate("/portfolio")} />;
+}
+
+function PortfolioRoute() {
+  return <PortfolioShell />;
 }

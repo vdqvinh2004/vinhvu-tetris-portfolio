@@ -4,6 +4,7 @@ import type { ProjectEntry } from "../../content/types";
 function ProjectCard({ project }: { project: ProjectEntry }) {
   return (
     <article className="project-card">
+      <p className="project-index">CASE FILE</p>
       <h3>{project.title}</h3>
       <p>{project.summary}</p>
       <p className="contribution">{project.contribution}</p>
@@ -31,8 +32,8 @@ function ProjectCard({ project }: { project: ProjectEntry }) {
 export function ProjectsSection() {
   return (
     <section id="projects" className="portfolio-section" aria-labelledby="projects-title">
-      <p className="eyebrow">SELECTED LEVELS</p>
-      <h2 id="projects-title">Projects</h2>
+      <p className="eyebrow">NOTE 04 / SELECTED WORK</p>
+      <h2 id="projects-title">Projects with a point of view</h2>
       <div className="project-grid">
         {portfolio.projects.map((project) => (
           <ProjectCard key={project.title} project={project} />

@@ -2,6 +2,7 @@ import { useEffect, useReducer, useRef, useState } from "react";
 import { GameBoard } from "./GameBoard";
 import { GameControls } from "./GameControls";
 import { GameRewards } from "./GameRewards";
+import { GameScene } from "./GameScene";
 import {
   LINES_PER_ROUND,
   TOTAL_LINES,
@@ -50,10 +51,10 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
       ArrowRight: () => dispatch({ type: "move", direction: 1 }),
       d: () => dispatch({ type: "move", direction: 1 }),
       D: () => dispatch({ type: "move", direction: 1 }),
-      " ": () => dispatch({ type: "rotate" }),
-      ArrowUp: () => dispatch({ type: "drop" }),
-      w: () => dispatch({ type: "drop" }),
-      W: () => dispatch({ type: "drop" }),
+      " ": () => dispatch({ type: "drop" }),
+      ArrowUp: () => dispatch({ type: "rotate" }),
+      w: () => dispatch({ type: "rotate" }),
+      W: () => dispatch({ type: "rotate" }),
       ArrowDown: () => dispatch({ type: "tick" }),
       s: () => dispatch({ type: "tick" }),
       S: () => dispatch({ type: "tick" }),
@@ -90,19 +91,23 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
 
   return (
     <section className="landing" aria-labelledby="landing-title">
-      <div className="landing-copy">
-        <p className="eyebrow">INSERT COIN / VIEW PORTFOLIO</p>
-        <h1 id="landing-title">Vinh Vu builds systems that do not drop the ball.</h1>
-        <p>
-          Full-stack developer and automation QA engineer. Complete four rounds to reveal my work
-          one file at a time, or take the express route below.
-        </p>
-        <button className="skip-button" onClick={() => dispatch({ type: "skip" })}>
-          Skip intro <span aria-hidden="true">-&gt;</span>
-        </button>
-      </div>
-
-      <div className="game-console" onKeyDown={onKeyDown} ref={gameConsoleRef} tabIndex={0}>
+      <GameScene reducedMotion={reducedMotion} rewardsUnlocked={state.rewardsUnlocked} />
+      <div
+        className={`game-console game-${state.phase}`}
+        onKeyDown={onKeyDown}
+        ref={gameConsoleRef}
+        tabIndex={0}
+      >
+        <div className="challenge-heading">
+          <h1 id="landing-title">Portfolio run</h1>
+          <button
+            aria-label="Skip intro and view portfolio"
+            className="skip-button"
+            onClick={() => dispatch({ type: "skip" })}
+          >
+            Skip intro <span aria-hidden="true">-&gt;</span>
+          </button>
+        </div>
         <div className="game-hud" aria-live="polite">
           <span>SCORE {state.score.toString().padStart(5, "0")}</span>
           <span>
@@ -112,37 +117,47 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
             LINES {state.linesCleared}/{TOTAL_LINES}
           </span>
         </div>
-        <GameBoard state={state} />
-        <section aria-labelledby="how-to-play-title" className="how-to-play">
-          <h2 id="how-to-play-title">How to play</h2>
-          <p>
-            Clear {LINES_PER_ROUND} lines per round to reveal a portfolio file. Starting a game
-            focuses this panel for keyboard play.
-          </p>
-          <dl>
-            <div>
-              <dt>A or Left Arrow</dt>
-              <dd>Move left</dd>
-            </div>
-            <div>
-              <dt>D or Right Arrow</dt>
-              <dd>Move right</dd>
-            </div>
-            <div>
-              <dt>Space</dt>
-              <dd>Rotate</dd>
-            </div>
-            <div>
-              <dt>W or Up Arrow</dt>
-              <dd>Hard drop</dd>
-            </div>
-            <div>
-              <dt>S or Down Arrow</dt>
-              <dd>Soft drop</dd>
-            </div>
-          </dl>
-          <p className="touch-control-note">Touch controls are available on small screens.</p>
-        </section>
+        <div className="challenge-playfield">
+          <div className="game-board-shell">
+            <GameBoard state={state} />
+            {state.phase === "idle" && (
+              <button className="game-launch" onClick={start}>
+                Play portfolio run
+              </button>
+            )}
+            {state.phase === "playing" && <p className="game-live-label">RUNNING</p>}
+          </div>
+          <section aria-labelledby="how-to-play-title" className="how-to-play">
+            <h2 id="how-to-play-title">How to play</h2>
+            <p>
+              Clear {LINES_PER_ROUND} lines in each round to unlock a portfolio notification. Start
+              focuses this panel for keyboard play.
+            </p>
+            <dl>
+              <div>
+                <dt>A / Left</dt>
+                <dd>Move left</dd>
+              </div>
+              <div>
+                <dt>D / Right</dt>
+                <dd>Move right</dd>
+              </div>
+              <div>
+                <dt>W / Up</dt>
+                <dd>Rotate</dd>
+              </div>
+              <div>
+                <dt>Space</dt>
+                <dd>Hard drop</dd>
+              </div>
+              <div>
+                <dt>S / Down</dt>
+                <dd>Soft drop</dd>
+              </div>
+            </dl>
+            <p className="touch-control-note">Touch controls are available on small screens.</p>
+          </section>
+        </div>
         <p className="game-status" role="status">
           {state.phase === "game-over"
             ? "Game over. Restart or skip to the portfolio."
@@ -158,7 +173,7 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
           <button className="game-session-button" onClick={enterPortfolio}>
             Enter full portfolio
           </button>
-        ) : (
+        ) : state.phase !== "idle" ? (
           <GameControls
             isGameOver={state.phase === "game-over"}
             isPlaying={state.phase === "playing"}
@@ -168,8 +183,8 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
             onRotate={() => dispatch({ type: "rotate" })}
             onStart={start}
           />
-        )}
-        <GameRewards rewardsUnlocked={state.rewardsUnlocked} />
+        ) : null}
+        <GameRewards key={state.rewardsUnlocked} rewardsUnlocked={state.rewardsUnlocked} />
       </div>
     </section>
   );

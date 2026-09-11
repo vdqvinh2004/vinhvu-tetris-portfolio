@@ -4,10 +4,26 @@ test("a recruiter can skip directly to the portfolio", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: /skip intro/i }).click();
 
+  await expect(page).toHaveURL(/\/portfolio$/);
   await expect(page.getByRole("heading", { name: "Vinh Vu" })).toBeVisible();
   for (const section of ["About", "Skills", "Experience", "Projects", "Resume", "Contact"]) {
     await expect(page.getByRole("link", { name: section, exact: true })).toBeVisible();
   }
+});
+
+test("a visitor can open the portfolio directly and return to a fresh game", async ({ page }) => {
+  await page.goto("/portfolio");
+  await expect(page.getByRole("heading", { name: "Vinh Vu" })).toBeVisible();
+  await expect(page.locator(".portfolio-game-background")).toHaveCount(2);
+  await expect(page.locator(".portfolio-ghost-cell.is-filled").first()).toBeAttached();
+  await expect(page.locator(".portfolio-ghost-board")).toHaveCount(2);
+  await expect(page.locator(".portfolio-ghost-board.is-left")).toHaveCount(1);
+  await expect(page.locator(".portfolio-scene")).toBeAttached();
+
+  await page.getByRole("link", { name: /play game/i }).click();
+
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole("button", { name: /play portfolio run/i })).toBeVisible();
 });
 
 test("the game explains its controls and removes touch buttons on desktop", async ({ page }) => {
@@ -16,7 +32,7 @@ test("the game explains its controls and removes touch buttons on desktop", asyn
 
   await expect(page.getByRole("heading", { name: /how to play/i })).toBeVisible();
   await expect(page.getByText("Space", { exact: true })).toBeVisible();
-  await page.getByRole("button", { name: /start game/i }).click();
+  await page.getByRole("button", { name: /play portfolio run/i }).click();
 
   await expect(page.getByRole("button", { name: /move piece left/i })).toBeHidden();
 });
@@ -24,7 +40,7 @@ test("the game explains its controls and removes touch buttons on desktop", asyn
 test("small screens retain touch controls", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await page.getByRole("button", { name: /start game/i }).click();
+  await page.getByRole("button", { name: /play portfolio run/i }).click();
 
   await expect(page.getByRole("button", { name: /move piece left/i })).toBeVisible();
   await expect(page.getByText(/Touch controls are available/i)).toBeVisible();

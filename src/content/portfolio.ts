@@ -7,10 +7,10 @@ export const portfolio: PortfolioContent = {
     headline: "Full-stack Developer | Automation QA Engineer",
     intro:
       "I turn product ideas into dependable software and build automated confidence around every release. This portfolio is a small game about the systems thinking behind that work.",
-    location: "[Add your location]",
-    email: "[replace-with-your-email@example.com]",
+    location: "Ha Noi, Vietnam",
+    email: "vdqvinh2004@gmail.com",
     githubUrl: "https://github.com/vdqvinh2004",
-    linkedInUrl: "https://www.linkedin.com/in/[replace-with-your-profile]",
+    linkedInUrl: "https://www.linkedin.com/in/v%C5%A9-vinh-b8b870326/",
     resumeUrl: "/resume-placeholder.pdf",
   },
   skillGroups: [

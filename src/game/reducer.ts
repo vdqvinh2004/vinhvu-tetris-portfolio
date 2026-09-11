@@ -3,7 +3,7 @@ import type { ActivePiece, Board, PieceKind } from "./pieces";
 
 export type GamePhase = "idle" | "playing" | "game-over" | "unlocked" | "skipped";
 
-export const LINES_PER_ROUND = 2;
+export const LINES_PER_ROUND = 4;
 export const TOTAL_ROUNDS = 4;
 export const TOTAL_LINES = LINES_PER_ROUND * TOTAL_ROUNDS;
 
