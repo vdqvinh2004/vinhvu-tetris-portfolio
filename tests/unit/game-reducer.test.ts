@@ -51,6 +51,12 @@ describe("gameReducer", () => {
     expect(gameReducer(initialGameState(), { type: "skip" }).phase).toBe("skipped");
   });
 
+  it("allows Skip intro from every session phase", () => {
+    for (const phase of ["idle", "playing", "game-over", "unlocked", "skipped"] as const) {
+      expect(gameReducer({ ...initialGameState(), phase }, { type: "skip" }).phase).toBe("skipped");
+    }
+  });
+
   it("unlocks one portfolio reward after each round", () => {
     const state = gameReducer(initialGameState(), { type: "start" });
     const nearReward = {

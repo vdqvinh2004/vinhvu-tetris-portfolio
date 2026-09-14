@@ -44,7 +44,7 @@ export function GameControls({
       <button aria-label="Move piece right" onClick={() => onMove(1)}>
         Right
       </button>
-      <button className="wide-control" onClick={onDrop}>
+      <button aria-label="Hard drop piece" className="wide-control" onClick={onDrop}>
         Drop
       </button>
     </div>

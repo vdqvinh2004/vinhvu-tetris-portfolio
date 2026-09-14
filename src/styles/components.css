@@ -221,6 +221,19 @@
   grid-template-columns: repeat(3, 1fr);
   margin-top: 1rem;
 }
+.game-controls button {
+  background: #fff;
+  border-color: #fff;
+  color: #090909;
+  min-height: 48px;
+  touch-action: manipulation;
+}
+.game-controls button:hover,
+.game-controls button:focus-visible {
+  background: #22d3ee;
+  border-color: #22d3ee;
+  color: #090909;
+}
 .wide-control {
   grid-column: span 3;
 }
@@ -250,6 +263,18 @@
   position: sticky;
   top: 0;
   z-index: 2;
+}
+.skip-to-content {
+  background: var(--ink);
+  color: var(--panel);
+  left: 1rem;
+  padding: 0.7rem 0.9rem;
+  position: fixed;
+  top: -5rem;
+  z-index: 10;
+}
+.skip-to-content:focus {
+  top: 1rem;
 }
 .wordmark {
   font-size: 1rem;

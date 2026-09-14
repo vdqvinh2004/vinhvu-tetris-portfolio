@@ -214,6 +214,32 @@ description: "Implementation tasks for the frontend-only Tetris portfolio"
 
 **Checkpoint**: The play screen opens directly onto the game with a quiet single-line header.
 
+## Phase 17: Production Readiness Now Wave
+
+**Purpose**: Remove the deployed-site blockers found in live browser review, make the mobile game usable, and lock the recruiter-critical flows before adding more features.
+
+**Observed baseline**: `/` loads and the game starts; client-side Skip and Play Game navigation work; direct `/portfolio` returns Vercel `404: NOT_FOUND`; the resume URL returns a 72-byte text placeholder as `application/pdf`; Experience and one Project card expose bracketed placeholders; mobile touch buttons render with invisible labels; the full E2E run has a timing-sensitive Chromium failure; default Vitest timeout is too tight for the portfolio render.
+
+### P0 — Release blockers
+
+- [x] T091 Add a Vercel SPA fallback in `vercel.json` so direct `/portfolio` and unknown paths load `index.html`, while existing static assets continue to resolve normally.
+- [ ] T092 Replace `public/resume-placeholder.pdf` with a verified PDF and update `portfolio.profile.resumeUrl` in `src/content/portfolio.ts` to the final public filename.
+- [ ] T093 Replace or remove all public placeholder entries in `src/content/portfolio.ts`; publish only verified Experience and Project claims, links, and outcomes.
+
+### P1 — Visitor and gameplay UX
+
+- [x] T094 Fix mobile game controls in `src/components/game/GameControls.tsx` and `src/styles/components.css`: visible button labels, high contrast, minimum 44px targets, 8px spacing, and controls reachable without excessive scrolling; keep desktop keyboard-first behavior.
+- [x] T095 Reset scroll position on entry to `/portfolio` and focus the portfolio main region in `src/app/App.tsx` and `src/components/portfolio/PortfolioShell.tsx`; verify Skip works from a scrolled game state and direct route entry starts at the top.
+- [x] T096 Extend `tests/e2e/portfolio-access.spec.ts` and `tests/e2e/accessibility.spec.ts` for direct route loading, final game completion, exactly-once achievement display, game-over/restart recovery, Skip from every game state, and recruiter-action destinations.
+- [x] T097 Add responsive checks at 320px, 375px, 390px, 768px, 1024px, and 1440px for horizontal overflow, navigation wrapping, heading readability, mobile controls, visible focus, and reduced-motion behavior.
+
+### P2 — Validation reliability
+
+- [x] T098 Stabilize test timing and parallel execution: make the portfolio render test pass with the default test command and remove the Chromium E2E flake without weakening assertions.
+- [ ] T099 Run `npm run format:check`, `npm run lint`, `npm run typecheck`, `npm test`, `npm run test:e2e`, and `npm run build`; manually recheck deployed `/`, `/portfolio`, resume download, game completion, mobile controls, reduced motion, and external links. Automated checks pass locally; deployed/manual validation remains.
+
+**Checkpoint**: Direct deployed routes work, resume and content are publishable, mobile gameplay is understandable and operable, recruiter actions are valid, and all automated and manual release checks pass.
+
 ## Dependencies and Execution Order
 
 - T001-T005 establish tooling and can begin first.
@@ -233,6 +259,10 @@ description: "Implementation tasks for the frontend-only Tetris portfolio"
 - T080 grounds T081-T083; the shape test guards both scenes.
 - T084-T087 are independent polish items verified by the routing journey.
 - T088-T090 are header-only simplifications covered by existing game tests.
+- T091 must precede direct-route E2E coverage in T096 and the deployed validation in T099.
+- T092-T093 require verified owner content before completion; hide incomplete entries rather than publish claims when source material is missing.
+- T094-T095 can proceed in parallel after current layout and route behavior are reproduced.
+- T096-T098 follow the corresponding implementation tasks; T099 is the final gate.
 
 ## Parallel Opportunities
 
@@ -247,6 +277,9 @@ description: "Implementation tasks for the frontend-only Tetris portfolio"
 - T055 and T057 can proceed in parallel after T054; T056 integrates the shared visual system.
 - T062 and T063 can proceed in parallel after T061; T064 follows the finalized reward contract.
 - T068 and T070 can proceed in parallel after T067.
+- T092 and T093 can proceed in parallel after verified content is available.
+- T094 and T095 can proceed in parallel.
+- T096 and T097 can proceed in parallel after T091-T095.
 
 ## Implementation Strategy
 
@@ -264,5 +297,6 @@ description: "Implementation tasks for the frontend-only Tetris portfolio"
 12. Deliver the Three.js scene depth pass through T080-T083.
 13. Deliver full-page background coverage and nav consistency through T084-T087.
 14. Deliver the simplified play-screen header through T088-T090.
+15. Deliver the Production Readiness Now Wave through T091-T099 before adding new product or visual features.
 
 Each phase retains a fully static frontend and must pass the constitution gates before the next phase begins.

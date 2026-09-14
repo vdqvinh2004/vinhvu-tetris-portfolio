@@ -36,13 +36,6 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
     return () => window.clearInterval(interval);
   }, [reducedMotion, state.phase, state.round]);
 
-  useEffect(() => {
-    if (state.phase === "skipped" && !hasEnteredPortfolio.current) {
-      hasEnteredPortfolio.current = true;
-      onEnterPortfolio();
-    }
-  }, [onEnterPortfolio, state.phase]);
-
   const onKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
     const actions: Record<string, () => void> = {
       ArrowLeft: () => dispatch({ type: "move", direction: -1 }),
@@ -82,6 +75,11 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
     onEnterPortfolio();
   };
 
+  const skipIntro = () => {
+    hasEnteredPortfolio.current = true;
+    onEnterPortfolio();
+  };
+
   const nextReward =
     state.rewardsUnlocked < TOTAL_ROUNDS
       ? `Clear ${LINES_PER_ROUND - (state.linesCleared % LINES_PER_ROUND)} line${
@@ -103,7 +101,7 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
           <button
             aria-label="Skip intro and view portfolio"
             className="skip-button"
-            onClick={() => dispatch({ type: "skip" })}
+            onClick={skipIntro}
           >
             Skip intro <span aria-hidden="true">-&gt;</span>
           </button>
