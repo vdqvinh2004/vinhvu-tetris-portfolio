@@ -125,18 +125,6 @@
   border-color: #ffd539;
   color: #070912;
 }
-.game-live-label {
-  background: #e4352d;
-  bottom: 0;
-  color: #fff;
-  font-size: 0.64rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  margin: 0;
-  padding: 0.45rem 0.65rem;
-  position: absolute;
-  right: 0;
-}
 .game-cell {
   background: #f5f5f1;
   border: 1px solid #e2e2de;
@@ -688,8 +676,10 @@
 .landing {
   background: #090909;
   color: #fff;
+  height: 100svh;
   isolation: isolate;
   max-width: none;
+  max-height: 100svh;
   min-height: 100svh;
   overflow: hidden;
   padding: clamp(1rem, 3vw, 3rem);
@@ -721,6 +711,9 @@
   max-width: 1080px;
   position: relative;
   width: min(100%, 1080px);
+}
+.landing .game-console:focus-visible {
+  outline-color: #fff;
 }
 
 .challenge-heading {
@@ -757,9 +750,16 @@
 .challenge-playfield {
   grid-template-columns: minmax(220px, 360px) minmax(220px, 1fr);
 }
+.game-side-panel {
+  align-content: start;
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
 .game-board {
   border-color: #fff;
   box-shadow: 0 0 0 4px rgb(255 255 255 / 0.14);
+  width: min(100%, 360px, calc((100svh - 12rem) / 2));
 }
 .game-cell {
   background: rgb(255 255 255 / 0.06);
@@ -807,6 +807,45 @@
 .how-to-play dl div {
   border-bottom-color: rgb(247 247 242 / 0.18);
 }
+.next-piece-panel {
+  align-items: center;
+  border: 1px solid rgb(247 247 242 / 0.22);
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  padding: 1rem;
+}
+.next-piece-heading {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  justify-content: center;
+}
+.next-piece-heading h2 {
+  font-size: 0.72rem;
+  margin: 0;
+}
+.next-piece-heading > span {
+  color: #c5c9d5;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.next-piece-preview {
+  background: rgb(255 255 255 / 0.04);
+  border: 1px solid rgb(247 247 242 / 0.18);
+  display: grid;
+  gap: 2px;
+  grid-template-columns: repeat(4, 1.35rem);
+  margin-top: 0;
+  padding: 0.6rem;
+  width: max-content;
+}
+.next-piece-cell {
+  aspect-ratio: 1;
+  border: 1px solid rgb(247 247 242 / 0.12);
+  width: 1.35rem;
+}
 .game-session-button {
   background: #fff;
   border-color: #fff;
@@ -818,66 +857,45 @@
   color: #fff;
 }
 .achievement-overlay {
-  align-items: center;
+  align-items: stretch;
   display: flex;
-  inset: 0;
-  justify-content: center;
-  padding: 1rem;
+  justify-content: stretch;
+  margin-top: 0;
   pointer-events: none;
-  position: fixed;
-  z-index: 50;
+  position: relative;
 }
 .achievement-card {
-  animation: achievement-pop 4.3s cubic-bezier(0.16, 0.84, 0.24, 1) forwards;
-  background: rgb(9 9 9 / 0.92);
-  border: 3px solid #ffd539;
-  box-shadow:
-    0 0 4rem rgb(255 213 57 / 0.35),
-    0 1.5rem 5rem rgb(0 0 0 / 0.6);
+  animation: achievement-notice 4.3s ease forwards;
+  background: rgb(255 213 57 / 0.12);
+  border: 1px solid #ffd539;
   color: #fff;
-  max-width: min(44rem, calc(100vw - 2rem));
-  padding: clamp(2rem, 6vw, 4rem);
-  text-align: center;
-  transform-origin: center;
-}
-.achievement-card > span {
-  color: #ffd539;
-  font-size: clamp(0.75rem, 2vw, 0.95rem);
-  font-weight: 700;
-  letter-spacing: 0.28em;
-}
-.achievement-card h3 {
-  font-size: clamp(2.2rem, 8vw, 5rem);
-  margin: 1rem 0;
+  padding: 0.85rem 1rem;
+  text-align: left;
+  width: 100%;
 }
 .achievement-card p {
   color: #e8e8e8;
-  font-size: clamp(1rem, 2.6vw, 1.35rem);
+  font-size: 0.82rem;
   line-height: 1.55;
-  margin: 0 auto;
-  max-width: 40ch;
+  margin: 0;
 }
 
-@keyframes achievement-pop {
+@keyframes achievement-notice {
   0% {
     opacity: 0;
-    transform: scale(0.5);
+    transform: translateY(0.5rem);
   }
   10% {
     opacity: 1;
-    transform: scale(1.06);
-  }
-  18% {
-    opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
   }
   72% {
     opacity: 1;
-    transform: scale(1);
+    transform: translateY(0);
   }
   100% {
     opacity: 0;
-    transform: scale(0.12);
+    transform: translateY(-0.25rem);
   }
 }
 
@@ -899,12 +917,62 @@
 
 @media (max-width: 760px) {
   .challenge-playfield {
-    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
   }
   .game-console {
     padding: 1rem;
   }
   .challenge-heading h1 {
     font-size: clamp(1.4rem, 7vw, 2rem);
+  }
+  .game-side-panel {
+    gap: 0.75rem;
+  }
+  .how-to-play {
+    border-left: 2px solid #fff;
+    border-top: 0;
+    padding: 0 0 0 0.65rem;
+  }
+  .how-to-play p,
+  .how-to-play dl {
+    font-size: 0.68rem;
+    line-height: 1.35;
+  }
+  .how-to-play dl {
+    gap: 0.3rem 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .how-to-play dl div {
+    display: block;
+  }
+  .how-to-play dd {
+    display: block;
+  }
+  .next-piece-panel {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.65rem;
+  }
+  .next-piece-heading h2 {
+    font-size: 0.65rem;
+  }
+  .next-piece-heading > span {
+    font-size: 0.62rem;
+  }
+  .next-piece-preview {
+    gap: 1px;
+    grid-template-columns: repeat(4, 1rem);
+    margin-top: 0.5rem;
+    padding: 0.4rem;
+  }
+  .next-piece-cell {
+    width: 1rem;
+  }
+  .game-status {
+    font-size: 0.72rem;
+    margin-top: 0.75rem;
+    padding-top: 0.6rem;
   }
 }

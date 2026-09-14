@@ -21,14 +21,12 @@ export function GameRewards({ rewardsUnlocked }: GameRewardsProps) {
     <>
       <div aria-live="polite" className="sr-only" role="status">
         {latestReward
-          ? `Achievement unlocked: ${latestReward.title}. ${latestReward.detail}`
+          ? latestReward.detail
           : "Clear four lines to unlock the first portfolio achievement."}
       </div>
       {latestReward && !dismissed && (
         <div aria-hidden="true" className="achievement-overlay">
           <div className="achievement-card">
-            <span>ACHIEVEMENT UNLOCKED</span>
-            <h3>{latestReward.title}</h3>
             <p>{latestReward.detail}</p>
           </div>
         </div>

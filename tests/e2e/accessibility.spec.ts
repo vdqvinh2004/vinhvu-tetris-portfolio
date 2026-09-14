@@ -97,3 +97,20 @@ test("recruiter links expose direct destinations", async ({ page }) => {
     "mailto:vdqvinh2004@gmail.com",
   );
 });
+
+test("the active game pauses when its tab becomes hidden", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: /play portfolio run/i }).click();
+
+  await page.evaluate(() => {
+    Object.defineProperty(document, "hidden", { configurable: true, value: true });
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  await expect(page.locator(".game-status")).toHaveText(/paused while this tab is inactive/i);
+
+  await page.evaluate(() => {
+    Object.defineProperty(document, "hidden", { configurable: true, value: false });
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  await expect(page.locator(".game-status")).toHaveText(/Clear 4 lines/i);
+});

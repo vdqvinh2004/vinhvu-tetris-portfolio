@@ -58,7 +58,22 @@ test("small screens retain touch controls", async ({ page }) => {
 
   await expect(page.getByRole("button", { name: /move piece left/i })).toBeVisible();
   await expect(page.getByRole("button", { name: /hard drop piece/i })).toHaveText("Drop");
+  await expect(page.getByRole("img", { name: /next block: I/i })).toBeVisible();
+  await expect(page.locator(".game-live-label")).toHaveCount(0);
   await expect(page.getByText(/Touch controls are available/i)).toBeVisible();
+});
+
+test("the play stage stays inside the viewport on small screens", async ({ page }) => {
+  for (const width of [320, 375, 390]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto("/");
+    await page.getByRole("button", { name: /play portfolio run/i }).click();
+
+    await expect
+      .poll(() => page.evaluate(() => document.documentElement.scrollHeight - innerHeight))
+      .toBeLessThanOrEqual(1);
+    await expect(page.getByRole("img", { name: /next block:/i })).toBeVisible();
+  }
 });
 
 test("a visitor can recover from game over and skip afterward", async ({ page }) => {

@@ -1,7 +1,7 @@
 import { clearLines, collides, emptyBoard, lockPiece } from "./engine";
 import type { ActivePiece, Board, PieceKind } from "./pieces";
 
-export type GamePhase = "idle" | "playing" | "game-over" | "unlocked" | "skipped";
+export type GamePhase = "idle" | "playing" | "paused" | "game-over" | "unlocked" | "skipped";
 
 export const LINES_PER_ROUND = 4;
 export const TOTAL_ROUNDS = 4;
@@ -25,6 +25,8 @@ export type GameAction =
   | { type: "tick" }
   | { type: "drop" }
   | { type: "skip" }
+  | { type: "pause" }
+  | { type: "resume" }
   | { type: "restart" };
 
 const spawnedPiece = (kind: PieceKind): ActivePiece => ({ kind, rotation: 0, x: 3, y: 0 });
@@ -93,6 +95,8 @@ function moveDown(state: GameState): GameState {
 export function gameReducer(state: GameState, action: GameAction): GameState {
   if (action.type === "restart") return initialGameState();
   if (action.type === "skip") return { ...state, phase: "skipped" };
+  if (action.type === "pause" && state.phase === "playing") return { ...state, phase: "paused" };
+  if (action.type === "resume" && state.phase === "paused") return { ...state, phase: "playing" };
   if (action.type === "start" && state.phase === "idle") return { ...state, phase: "playing" };
   if (state.phase !== "playing") return state;
 

@@ -10,6 +10,7 @@ import {
   gameReducer,
   initialGameState,
 } from "../../game/reducer";
+import { getCells } from "../../game/pieces";
 
 interface LandingGameProps {
   onEnterPortfolio: () => void;
@@ -35,6 +36,12 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
     const interval = window.setInterval(() => dispatch({ type: "tick" }), tickDelay);
     return () => window.clearInterval(interval);
   }, [reducedMotion, state.phase, state.round]);
+
+  useEffect(() => {
+    const pauseWhenHidden = () => dispatch({ type: document.hidden ? "pause" : "resume" });
+    document.addEventListener("visibilitychange", pauseWhenHidden);
+    return () => document.removeEventListener("visibilitychange", pauseWhenHidden);
+  }, []);
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
     const actions: Record<string, () => void> = {
@@ -86,6 +93,7 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
           LINES_PER_ROUND - (state.linesCleared % LINES_PER_ROUND) === 1 ? "" : "s"
         } to unlock reward ${state.rewardsUnlocked + 1}.`
       : "All portfolio files unlocked.";
+  const nextPieceCells = getCells({ kind: state.nextPiece, rotation: 0, x: 0, y: 0 });
 
   return (
     <section className="landing" aria-labelledby="landing-title">
@@ -123,55 +131,85 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
                 Play portfolio run
               </button>
             )}
-            {state.phase === "playing" && <p className="game-live-label">RUNNING</p>}
           </div>
-          <section aria-labelledby="how-to-play-title" className="how-to-play">
-            <h2 id="how-to-play-title">How to play</h2>
-            <p>
-              Clear {LINES_PER_ROUND} lines in each round to unlock a portfolio notification. Start
-              focuses this panel for keyboard play.
-            </p>
-            <dl>
-              <div>
-                <dt>A / Left</dt>
-                <dd>Move left</dd>
+          <div className="game-side-panel">
+            <section aria-labelledby="how-to-play-title" className="how-to-play">
+              <h2 id="how-to-play-title">How to play</h2>
+              <p>
+                Clear {LINES_PER_ROUND} lines in each round to unlock a portfolio notification.
+                Start focuses this panel for keyboard play.
+              </p>
+              <dl>
+                <div>
+                  <dt>A / Left</dt>
+                  <dd>Move left</dd>
+                </div>
+                <div>
+                  <dt>D / Right</dt>
+                  <dd>Move right</dd>
+                </div>
+                <div>
+                  <dt>W / Up</dt>
+                  <dd>Rotate</dd>
+                </div>
+                <div>
+                  <dt>Space</dt>
+                  <dd>Hard drop</dd>
+                </div>
+                <div>
+                  <dt>S / Down</dt>
+                  <dd>Soft drop</dd>
+                </div>
+              </dl>
+              <p className="touch-control-note">Touch controls are available on small screens.</p>
+            </section>
+            <section aria-labelledby="next-piece-title" className="next-piece-panel">
+              <div className="next-piece-heading">
+                <h2 id="next-piece-title">Next block</h2>
+                <span aria-hidden="true">{state.nextPiece}</span>
               </div>
-              <div>
-                <dt>D / Right</dt>
-                <dd>Move right</dd>
+              <div
+                aria-label={`Next block: ${state.nextPiece}`}
+                className="next-piece-preview"
+                role="img"
+              >
+                {Array.from({ length: 16 }, (_, index) => {
+                  const x = index % 4;
+                  const y = Math.floor(index / 4);
+                  const filled = nextPieceCells.some(
+                    ([cellX, cellY]) => cellX === x && cellY === y,
+                  );
+                  return (
+                    <span
+                      aria-hidden="true"
+                      className={`next-piece-cell${filled ? ` piece-${state.nextPiece}` : ""}`}
+                      key={index}
+                    />
+                  );
+                })}
               </div>
-              <div>
-                <dt>W / Up</dt>
-                <dd>Rotate</dd>
-              </div>
-              <div>
-                <dt>Space</dt>
-                <dd>Hard drop</dd>
-              </div>
-              <div>
-                <dt>S / Down</dt>
-                <dd>Soft drop</dd>
-              </div>
-            </dl>
-            <p className="touch-control-note">Touch controls are available on small screens.</p>
-          </section>
+            </section>
+            <GameRewards key={state.rewardsUnlocked} rewardsUnlocked={state.rewardsUnlocked} />
+          </div>
         </div>
         <p className="game-status" role="status">
           {state.phase === "game-over"
             ? "Game over. Restart or skip to the portfolio."
-            : state.phase === "unlocked"
-              ? "Mission complete. Your full portfolio is ready."
-              : state.phase === "idle"
-                ? reducedMotion
-                  ? "Reduced motion is on. Start to play at your pace."
-                  : "Start game when ready."
-                : nextReward}
+            : state.phase === "paused"
+              ? "Game paused while this tab is inactive."
+              : state.phase === "unlocked"
+                ? "Mission complete. Your full portfolio is ready."
+                : state.phase === "idle"
+                  ? reducedMotion
+                    ? "Reduced motion is on. Start to play at your pace."
+                    : "Start game when ready."
+                  : nextReward}
         </p>
         {state.phase === "unlocked" ? (
           <button className="game-session-button" onClick={enterPortfolio}>
             Enter full portfolio
           </button>
-        ) : state.phase !== "idle" ? (
+        ) : state.phase !== "idle" && state.phase !== "paused" ? (
           <GameControls
             isGameOver={state.phase === "game-over"}
             isPlaying={state.phase === "playing"}
@@ -182,7 +220,6 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
             onStart={start}
           />
         ) : null}
-        <GameRewards key={state.rewardsUnlocked} rewardsUnlocked={state.rewardsUnlocked} />
       </div>
     </section>
   );

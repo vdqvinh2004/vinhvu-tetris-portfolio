@@ -52,9 +52,25 @@ describe("gameReducer", () => {
   });
 
   it("allows Skip intro from every session phase", () => {
-    for (const phase of ["idle", "playing", "game-over", "unlocked", "skipped"] as const) {
+    for (const phase of [
+      "idle",
+      "playing",
+      "paused",
+      "game-over",
+      "unlocked",
+      "skipped",
+    ] as const) {
       expect(gameReducer({ ...initialGameState(), phase }, { type: "skip" }).phase).toBe("skipped");
     }
+  });
+
+  it("pauses and resumes only active sessions", () => {
+    const playing = gameReducer(initialGameState(), { type: "start" });
+    const paused = gameReducer(playing, { type: "pause" });
+
+    expect(paused.phase).toBe("paused");
+    expect(gameReducer(paused, { type: "resume" }).phase).toBe("playing");
+    expect(gameReducer(initialGameState(), { type: "resume" }).phase).toBe("idle");
   });
 
   it("unlocks one portfolio reward after each round", () => {
