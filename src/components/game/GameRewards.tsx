@@ -27,6 +27,7 @@ export function GameRewards({ rewardsUnlocked }: GameRewardsProps) {
       {latestReward && !dismissed && (
         <div aria-hidden="true" className="achievement-overlay">
           <div className="achievement-card">
+            <span className="achievement-label">Achievement unlocked</span>
             <p>{latestReward.detail}</p>
           </div>
         </div>

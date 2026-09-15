@@ -104,8 +104,11 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
         ref={gameConsoleRef}
         tabIndex={0}
       >
-        <div className="challenge-heading">
+        <header className="play-header">
           <h1 id="landing-title">Portfolio run</h1>
+          <p className="play-tagline">
+            Clear lines. Unlock portfolio details. Or skip straight in.
+          </p>
           <button
             aria-label="Skip intro and view portfolio"
             className="skip-button"
@@ -113,16 +116,51 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
           >
             Skip intro <span aria-hidden="true">-&gt;</span>
           </button>
+        </header>
+
+        <div className="play-hud" aria-live="polite">
+          <div className="hud-stat">
+            <span className="hud-label">Score</span>
+            <span className="hud-value">{state.score.toString().padStart(5, "0")}</span>
+          </div>
+          <div className="hud-stat">
+            <span className="hud-label">Lines</span>
+            <span className="hud-value">
+              {state.linesCleared}/{TOTAL_LINES}
+            </span>
+          </div>
+          <div className="hud-stat">
+            <span className="hud-label">Round</span>
+            <span className="hud-value">
+              {state.round}/{TOTAL_ROUNDS}
+            </span>
+          </div>
+          <section aria-labelledby="next-piece-title" className="next-piece-panel">
+            <div className="next-piece-heading">
+              <h2 id="next-piece-title">Next block</h2>
+              <span aria-hidden="true">{state.nextPiece}</span>
+            </div>
+            <div
+              aria-label={`Next block: ${state.nextPiece}`}
+              className="next-piece-preview"
+              role="img"
+            >
+              {Array.from({ length: 16 }, (_, index) => {
+                const x = index % 4;
+                const y = Math.floor(index / 4);
+                const filled = nextPieceCells.some(([cellX, cellY]) => cellX === x && cellY === y);
+                return (
+                  <span
+                    aria-hidden="true"
+                    className={`next-piece-cell${filled ? ` piece-${state.nextPiece}` : ""}`}
+                    key={index}
+                  />
+                );
+              })}
+            </div>
+          </section>
         </div>
-        <div className="game-hud" aria-live="polite">
-          <span>SCORE {state.score.toString().padStart(5, "0")}</span>
-          <span>
-            ROUND {state.round}/{TOTAL_ROUNDS}
-          </span>
-          <span>
-            LINES {state.linesCleared}/{TOTAL_LINES}
-          </span>
-        </div>
+
         <div className="challenge-playfield">
           <div className="game-board-shell">
             <GameBoard state={state} />
@@ -131,6 +169,7 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
                 Play portfolio run
               </button>
             )}
+            <GameRewards key={state.rewardsUnlocked} rewardsUnlocked={state.rewardsUnlocked} />
           </div>
           <div className="game-side-panel">
             <section aria-labelledby="how-to-play-title" className="how-to-play">
@@ -139,7 +178,7 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
                 Clear {LINES_PER_ROUND} lines in each round to unlock a portfolio notification.
                 Start focuses this panel for keyboard play.
               </p>
-              <dl>
+              <dl className="key-legend">
                 <div>
                   <dt>A / Left</dt>
                   <dd>Move left</dd>
@@ -163,63 +202,39 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
               </dl>
               <p className="touch-control-note">Touch controls are available on small screens.</p>
             </section>
-            <section aria-labelledby="next-piece-title" className="next-piece-panel">
-              <div className="next-piece-heading">
-                <h2 id="next-piece-title">Next block</h2>
-                <span aria-hidden="true">{state.nextPiece}</span>
-              </div>
-              <div
-                aria-label={`Next block: ${state.nextPiece}`}
-                className="next-piece-preview"
-                role="img"
-              >
-                {Array.from({ length: 16 }, (_, index) => {
-                  const x = index % 4;
-                  const y = Math.floor(index / 4);
-                  const filled = nextPieceCells.some(
-                    ([cellX, cellY]) => cellX === x && cellY === y,
-                  );
-                  return (
-                    <span
-                      aria-hidden="true"
-                      className={`next-piece-cell${filled ? ` piece-${state.nextPiece}` : ""}`}
-                      key={index}
-                    />
-                  );
-                })}
-              </div>
-            </section>
-            <GameRewards key={state.rewardsUnlocked} rewardsUnlocked={state.rewardsUnlocked} />
           </div>
         </div>
-        <p className="game-status" role="status">
-          {state.phase === "game-over"
-            ? "Game over. Restart or skip to the portfolio."
-            : state.phase === "paused"
-              ? "Game paused while this tab is inactive."
-              : state.phase === "unlocked"
-                ? "Mission complete. Your full portfolio is ready."
-                : state.phase === "idle"
-                  ? reducedMotion
-                    ? "Reduced motion is on. Start to play at your pace."
-                    : "Start game when ready."
-                  : nextReward}
-        </p>
-        {state.phase === "unlocked" ? (
-          <button className="game-session-button" onClick={enterPortfolio}>
-            Enter full portfolio
-          </button>
-        ) : state.phase !== "idle" && state.phase !== "paused" ? (
-          <GameControls
-            isGameOver={state.phase === "game-over"}
-            isPlaying={state.phase === "playing"}
-            onDrop={() => dispatch({ type: "drop" })}
-            onMove={(direction) => dispatch({ type: "move", direction })}
-            onRestart={restart}
-            onRotate={() => dispatch({ type: "rotate" })}
-            onStart={start}
-          />
-        ) : null}
+
+        <div className="play-footer">
+          <p className="game-status" role="status">
+            {state.phase === "game-over"
+              ? "Game over. Restart or skip to the portfolio."
+              : state.phase === "paused"
+                ? "Game paused while this tab is inactive."
+                : state.phase === "unlocked"
+                  ? "Mission complete. Your full portfolio is ready."
+                  : state.phase === "idle"
+                    ? reducedMotion
+                      ? "Reduced motion is on. Start to play at your pace."
+                      : "Start game when ready."
+                    : nextReward}
+          </p>
+          {state.phase === "unlocked" ? (
+            <button className="game-session-button" onClick={enterPortfolio}>
+              Enter full portfolio
+            </button>
+          ) : state.phase !== "idle" && state.phase !== "paused" ? (
+            <GameControls
+              isGameOver={state.phase === "game-over"}
+              isPlaying={state.phase === "playing"}
+              onDrop={() => dispatch({ type: "drop" })}
+              onMove={(direction) => dispatch({ type: "move", direction })}
+              onRestart={restart}
+              onRotate={() => dispatch({ type: "rotate" })}
+              onStart={start}
+            />
+          ) : null}
+        </div>
       </div>
     </section>
   );

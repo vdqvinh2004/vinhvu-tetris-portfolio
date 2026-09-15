@@ -1,4 +1,5 @@
-import * as THREE from "three";
+import { BoxGeometry, Group, Mesh } from "three";
+import type * as THREE from "three";
 import { baseCells } from "./pieces";
 import type { PieceKind } from "./pieces";
 
@@ -8,7 +9,7 @@ export function createTetrominoCluster(
   material: THREE.Material,
   unit = 0.9,
 ): THREE.Group {
-  const group = new THREE.Group();
+  const group = new Group();
   const cells = baseCells(kind);
   let minX = Infinity;
   let maxX = -Infinity;
@@ -22,9 +23,9 @@ export function createTetrominoCluster(
   }
   const centerX = (minX + maxX) / 2;
   const centerY = (minY + maxY) / 2;
-  const geometry = new THREE.BoxGeometry(unit, unit, unit);
+  const geometry = new BoxGeometry(unit, unit, unit);
   for (const [x, y] of cells) {
-    const mesh = new THREE.Mesh(geometry, material);
+    const mesh = new Mesh(geometry, material);
     mesh.position.set(x - centerX, centerY - y, 0);
     group.add(mesh);
   }
