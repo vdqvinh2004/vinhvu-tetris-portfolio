@@ -49,7 +49,8 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
   // to real play the moment the visitor starts. Reduced motion gets a calm
   // static board instead of a moving loop.
   const demoActive = state.phase === "idle" && !reducedMotion;
-  const demoFrame = useDemoPlayback(demoActive);
+  const demo = useDemoPlayback(demoActive);
+  const demoFrame = demo?.frame;
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
     const actions: Record<string, () => void> = {
@@ -128,8 +129,13 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
 
         <div className="play-hud" aria-live="polite">
           <div className="hud-stat">
-            <span className="hud-label">Score</span>
-            <span className="hud-value">{state.score.toString().padStart(5, "0")}</span>
+            <span className="hud-label">Score</span>{" "}
+            <span
+              className={`hud-value${demoActive && (demo?.score ?? 0) > 0 ? " hud-score-pop" : ""}`}
+              key={demoActive ? `demo-${demo?.score ?? 0}` : "game"}
+            >
+              {(demoActive ? (demo?.score ?? 0) : state.score).toString().padStart(5, "0")}
+            </span>
           </div>
           <div className="hud-stat">
             <span className="hud-label">Lines</span>
@@ -175,6 +181,11 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
               <DemoBoard frame={demoFrame} />
             ) : (
               <GameBoard state={state} />
+            )}
+            {demoActive && demo?.roundFlash != null && (
+              <div aria-hidden="true" className="demo-round-chip" key={demo.roundFlash}>
+                <span className="demo-round-chip-label">Demo round {demo.roundFlash} clear</span>
+              </div>
             )}
             {state.phase === "idle" && (
               <button className="game-launch" onClick={start}>
