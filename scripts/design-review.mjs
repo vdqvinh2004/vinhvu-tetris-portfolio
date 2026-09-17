@@ -78,7 +78,11 @@ for (const vp of VIEWPORTS) {
     const audit = await page.evaluate((selectors) => {
       const visible = (el) => {
         const style = getComputedStyle(el);
-        if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) === 0)
+        if (
+          style.display === "none" ||
+          style.visibility === "hidden" ||
+          Number(style.opacity) === 0
+        )
           return false;
         const rect = el.getBoundingClientRect();
         return rect.width > 1 && rect.height > 1;
@@ -122,12 +126,7 @@ for (const vp of VIEWPORTS) {
       const parseRgb = (raw) => {
         const m = raw.match(/rgba?\(([^)]+)\)/);
         if (!m) return null;
-        return m[1]
-          .split("/")[0]
-          .replace(/,/g, " ")
-          .trim()
-          .split(/\s+/)
-          .map(Number);
+        return m[1].split("/")[0].replace(/,/g, " ").trim().split(/\s+/).map(Number);
       };
       const lum = (rgb) => {
         const [r, g, b] = rgb.map((v) => {
@@ -216,9 +215,7 @@ for (const [name, routes] of Object.entries(report.viewports)) {
     }
     const { scene, audit, contrastChecks, touchTargets } = data;
     const { scrollHeight, innerHeight, scrollWidth, innerWidth } = audit.root;
-    console.log(
-      `game scene: ${scene.attached ? `canvas ${scene.w}x${scene.h}` : "NOT ATTACHED"}`,
-    );
+    console.log(`game scene: ${scene.attached ? `canvas ${scene.w}x${scene.h}` : "NOT ATTACHED"}`);
     console.log(
       `page: ${scrollHeight}/${innerHeight}vh tall, ${scrollWidth}/${innerWidth}px wide -> overflow ${scrollHeight - innerHeight}px v / ${scrollWidth - innerWidth}px h`,
     );
