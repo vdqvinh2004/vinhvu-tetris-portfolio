@@ -1,8 +1,10 @@
 import { useEffect, useReducer, useRef, useState } from "react";
+import { DemoBoard } from "./DemoBoard";
 import { GameBoard } from "./GameBoard";
 import { GameControls } from "./GameControls";
 import { GameRewards } from "./GameRewards";
 import { GameScene } from "./GameScene";
+import { useDemoPlayback } from "../../hooks/useDemoPlayback";
 import {
   LINES_PER_ROUND,
   TOTAL_LINES,
@@ -42,6 +44,12 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
     document.addEventListener("visibilitychange", pauseWhenHidden);
     return () => document.removeEventListener("visibilitychange", pauseWhenHidden);
   }, []);
+
+  // Attract mode: the scripted demo plays itself on the idle board and yields
+  // to real play the moment the visitor starts. Reduced motion gets a calm
+  // static board instead of a moving loop.
+  const demoActive = state.phase === "idle" && !reducedMotion;
+  const demoFrame = useDemoPlayback(demoActive);
 
   const onKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
     const actions: Record<string, () => void> = {
@@ -99,7 +107,7 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
     <section className="landing" aria-labelledby="landing-title">
       <GameScene reducedMotion={reducedMotion} rewardsUnlocked={state.rewardsUnlocked} />
       <div
-        className={`game-console game-${state.phase}`}
+        className={`game-console game-${state.phase}${demoActive ? " is-attract" : ""}`}
         onKeyDown={onKeyDown}
         ref={gameConsoleRef}
         tabIndex={0}
@@ -163,7 +171,11 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
 
         <div className="challenge-playfield">
           <div className="game-board-shell">
-            <GameBoard state={state} />
+            {demoActive && demoFrame ? (
+              <DemoBoard frame={demoFrame} />
+            ) : (
+              <GameBoard state={state} />
+            )}
             {state.phase === "idle" && (
               <button className="game-launch" onClick={start}>
                 Play portfolio run
@@ -216,7 +228,7 @@ export function LandingGame({ onEnterPortfolio }: LandingGameProps) {
                   : state.phase === "idle"
                     ? reducedMotion
                       ? "Reduced motion is on. Start to play at your pace."
-                      : "Start game when ready."
+                      : "Demo playing. Press Start to take the controls."
                     : nextReward}
           </p>
           {state.phase === "unlocked" ? (

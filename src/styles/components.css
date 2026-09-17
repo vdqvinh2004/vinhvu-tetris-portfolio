@@ -353,6 +353,28 @@
   background: #fff;
   border-color: #fff;
 }
+
+/* Attract mode: the idle board plays a scripted demo under the launch CTA. */
+.is-attract .demo-board {
+  filter: brightness(0.82) saturate(0.92);
+}
+.demo-clearing {
+  animation: demo-clear-flash 320ms ease-out;
+  background: #fff !important;
+}
+@keyframes demo-clear-flash {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.25;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .demo-clearing {
+    animation: none;
+  }
+}
 .game-controls {
   display: grid;
   gap: 0.4rem;
