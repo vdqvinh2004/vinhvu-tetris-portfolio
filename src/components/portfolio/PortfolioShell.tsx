@@ -32,6 +32,7 @@ export function PortfolioShell() {
       <PortfolioGameBackground side="right" startFrame={0} />
       <PortfolioGameBackground side="left" startFrame={70} />
       <PortfolioNav />
+      <div aria-hidden="true" className="portfolio-progress" />
       <div className="portfolio-stamp" aria-hidden="true">
         FIELD NOTES / 2026
       </div>

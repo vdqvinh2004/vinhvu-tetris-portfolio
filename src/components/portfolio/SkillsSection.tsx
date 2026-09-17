@@ -8,7 +8,9 @@ export function SkillsSection() {
       <div className="skill-grid">
         {portfolio.skillGroups.map((group) => (
           <article className="skill-group" key={group.title}>
-            <h3>{group.title}</h3>
+            <h3>
+              {group.title} <span className="skill-count">({group.skills.length})</span>
+            </h3>
             <ul>
               {group.skills.map((skill) => (
                 <li key={skill}>
